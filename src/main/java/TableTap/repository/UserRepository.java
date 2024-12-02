@@ -1,4 +1,10 @@
 package TableTap.repository;
 
-public class UserRepository {
+import TableTap.models.dao.User;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface UserRepository extends MongoRepository<User, String> {
+
 }
