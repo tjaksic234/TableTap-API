@@ -4,6 +4,7 @@ import TableTap.exceptions.UserAlreadyExistsException;
 import TableTap.models.dto.RegisterUserRequest;
 import TableTap.models.dto.UserDTO;
 import TableTap.services.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static TableTap.security.utils.Constants.API_ROUTE;
 
 @RestController
-@RequestMapping(API_ROUTE + "users")
+@RequestMapping(API_ROUTE + "/users")
 @Slf4j
 @AllArgsConstructor
 public class UserController {
