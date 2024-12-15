@@ -11,6 +11,10 @@ spring:
   sendgrid:
     api-key: ${SENDGRID_API_KEY}
     email-from: ${SENDGRID_EMAIL_FROM}
+  jwt:
+    cookie-name: ${JWT_COOKIE_NAME}
+    secret: ${JWT_SECRET}
+    expiration-ms: ${JWT_EXPIRATION_MS}
 ---
 # Development properties
 spring:

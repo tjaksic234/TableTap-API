@@ -1,6 +1,7 @@
 package TableTap.services.impl;
 
-import TableTap.models.dto.RegisterUserRequest;
+import TableTap.converters.ConverterService;
+import TableTap.models.dao.User;
 import TableTap.models.dto.UserDTO;
 import TableTap.repository.UserRepository;
 import TableTap.services.UserService;
@@ -19,14 +20,11 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    @Override
-    public UserDTO registerUser(RegisterUserRequest request) {
-        return null;
-    }
+    private final ConverterService converterService;
 
     @Override
-    public List<UserDTO> getAllUsers() {
-        return List.of();
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     @Override
