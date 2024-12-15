@@ -2,6 +2,7 @@ package TableTap.security.services.impl;
 
 import TableTap.converters.ConverterService;
 import TableTap.exceptions.InvalidPhoneException;
+import TableTap.exceptions.UnauthorizedException;
 import TableTap.exceptions.UserAlreadyExistsException;
 import TableTap.models.dao.User;
 import TableTap.models.dto.LoginRequest;
@@ -10,9 +11,14 @@ import TableTap.models.dto.RegisterUserRequest;
 import TableTap.models.dto.UserDTO;
 import TableTap.repository.UserRepository;
 import TableTap.security.services.AuthService;
+import TableTap.security.utils.JwtUtils;
 import TableTap.security.utils.PhoneHelper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +34,10 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
 
     private final ConverterService converterService;
+
+    private final AuthenticationManager authenticationManager;
+
+    private final JwtUtils jwtUtils;
 
     @Override
     public UserDTO register(RegisterUserRequest request) {
@@ -53,6 +63,24 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponse login(LoginRequest request) {
-        return null;
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                request.getEmail(),
+                request.getPassword()
+        ));
+
+        //? this is unnecessary since the authentication manager already checks the credentials
+        //? and does the lookup for the user in the db
+        //userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new UnauthorizedException("User not found"));
+
+        LoginResponse response = new LoginResponse();
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String accessToken = jwtUtils.generateJwtToken(authentication);
+
+        response.setAccessToken(accessToken);
+
+        log.info("Successful login with: {}", request.getEmail());
+        return response;
     }
 }

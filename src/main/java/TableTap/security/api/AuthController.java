@@ -2,12 +2,17 @@ package TableTap.security.api;
 
 import TableTap.exceptions.InvalidPhoneException;
 import TableTap.exceptions.UserAlreadyExistsException;
+import TableTap.models.dto.LoginRequest;
+import TableTap.models.dto.LoginResponse;
 import TableTap.models.dto.RegisterUserRequest;
 import TableTap.models.dto.UserDTO;
 import TableTap.security.services.AuthService;
+import TableTap.security.utils.JwtUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,14 +29,21 @@ public class AuthController {
 
     private final AuthService authService;
 
+    private final JwtUtils jwtUtils;
+
+    //? we have added a global exception handler and because of that there is no need
+    //? of try-catch block since the exceptions will all be handled implicitly across all controllers
     @PostMapping("register")
     public ResponseEntity<UserDTO> registerUser(@RequestBody RegisterUserRequest request) {
-        try {
             log.info("Attempting to register a user");
             return ResponseEntity.ok(authService.register(request));
-        } catch (UserAlreadyExistsException | InvalidPhoneException e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    }
+
+    @PostMapping("login")
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest request) {
+        log.info("Attempting to login");
+        LoginResponse response = authService.login(request);
+        ResponseCookie cookie = jwtUtils.createJwtCookie(response.getAccessToken());
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(response);
     }
 }
