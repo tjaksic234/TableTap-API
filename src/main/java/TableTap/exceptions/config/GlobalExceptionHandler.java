@@ -1,6 +1,7 @@
 package TableTap.exceptions.config;
 
 import TableTap.exceptions.InvalidPhoneException;
+import TableTap.exceptions.NotFoundException;
 import TableTap.exceptions.UnauthorizedException;
 import TableTap.exceptions.UserAlreadyExistsException;
 import lombok.AllArgsConstructor;
@@ -47,5 +48,16 @@ public class GlobalExceptionHandler {
                 .path(request.getDescription(false))
                 .build();
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException e, WebRequest request) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND)
+                .message(e.getMessage())
+                .path(request.getDescription(false))
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 }

@@ -1,7 +1,5 @@
 package TableTap.security.api;
 
-import TableTap.exceptions.InvalidPhoneException;
-import TableTap.exceptions.UserAlreadyExistsException;
 import TableTap.models.dto.LoginRequest;
 import TableTap.models.dto.LoginResponse;
 import TableTap.models.dto.RegisterUserRequest;
@@ -11,8 +9,7 @@ import TableTap.security.utils.JwtUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
+  import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

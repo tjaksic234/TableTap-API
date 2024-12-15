@@ -1,6 +1,7 @@
 package TableTap.services.impl;
 
 import TableTap.converters.ConverterService;
+import TableTap.exceptions.NotFoundException;
 import TableTap.models.dao.User;
 import TableTap.models.dto.UserDTO;
 import TableTap.repository.UserRepository;
@@ -29,6 +30,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getUserById(String id) {
-        return null;
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
+        return converterService.convertUserToUserDTO(user);
     }
 }

@@ -66,7 +66,7 @@ public class JwtUtils {
 
     public String getJwtFromCookies(HttpServletRequest request) {
         Cookie cookie = WebUtils.getCookie(request, jwtCookieName);
-        return cookie.getValue() != null ? cookie.getValue() : null;
+        return cookie != null ? cookie.getValue() : null;
     }
 
     public boolean validateToken(String token) {
