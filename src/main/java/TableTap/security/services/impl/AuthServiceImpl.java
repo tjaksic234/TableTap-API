@@ -2,7 +2,6 @@ package TableTap.security.services.impl;
 
 import TableTap.converters.ConverterService;
 import TableTap.exceptions.InvalidPhoneException;
-import TableTap.exceptions.UnauthorizedException;
 import TableTap.exceptions.UserAlreadyExistsException;
 import TableTap.models.dao.User;
 import TableTap.models.dto.LoginRequest;

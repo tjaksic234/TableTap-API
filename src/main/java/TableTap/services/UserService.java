@@ -1,7 +1,6 @@
 package TableTap.services;
 
 import TableTap.models.dao.User;
-import TableTap.models.dto.RegisterUserRequest;
 import TableTap.models.dto.UserDTO;
 
 import java.util.List;
