@@ -12,6 +12,6 @@ public class CreateRestaurantRequest {
     private String name;
     private String description;
     private CuisineType[] cuisineType;
-    private String longitude;
-    private String latitude;
+    private double longitude;
+    private double latitude;
 }
