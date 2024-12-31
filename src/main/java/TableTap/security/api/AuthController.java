@@ -28,8 +28,6 @@ public class AuthController {
 
     private final JwtUtils jwtUtils;
 
-    //? we have added a global exception handler and because of that there is no need
-    //? of try-catch block since the exceptions will all be handled implicitly across all controllers
     @PostMapping("register")
     public ResponseEntity<UserDTO> registerUser(@RequestBody RegisterUserRequest request) {
             log.info("Attempting to register a user");
