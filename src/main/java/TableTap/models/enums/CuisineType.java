@@ -5,5 +5,8 @@ public enum CuisineType {
     MEAT,
     VEGAN,
     CHINESE,
-    JAPANESE
+    JAPANESE,
+    ITALIAN,
+    INDIAN,
+    MEXICAN,
 }

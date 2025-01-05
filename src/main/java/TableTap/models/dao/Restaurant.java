@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -21,8 +22,10 @@ public class Restaurant {
     @Id
     private String id;
 
+    @TextIndexed(weight = 2)
     private String name;
 
+    @TextIndexed(weight = 1)
     private String description;
 
     private CuisineType[] cuisineType;

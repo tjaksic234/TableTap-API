@@ -12,6 +12,9 @@ import TableTap.models.dto.UserDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class ConverterServiceImpl implements ConverterService {
@@ -56,5 +59,22 @@ public class ConverterServiceImpl implements ConverterService {
         reservationDTO.setReservationDate(reservation.getReservationDate());
         reservationDTO.setValidUntil(reservation.getValidUntil());
         return reservationDTO;
+    }
+
+    @Override
+    public List<RestaurantDTO> convertRestaurantsToRestaurantDTOs(List<Restaurant> restaurantList) {
+        List<RestaurantDTO> restaurantDTOList = new ArrayList<>();
+
+        for (Restaurant restaurant : restaurantList) {
+            RestaurantDTO restaurantDTO = new RestaurantDTO();
+            restaurantDTO.setName(restaurant.getName());
+            restaurantDTO.setDescription(restaurant.getDescription());
+            restaurantDTO.setCuisineType(restaurant.getCuisineType());
+            restaurantDTO.setLocation(restaurant.getLocation());
+            restaurantDTO.setCreatedAt(restaurant.getCreatedAt());
+
+            restaurantDTOList.add(restaurantDTO);
+        }
+        return restaurantDTOList;
     }
 }

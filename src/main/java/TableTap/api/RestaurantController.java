@@ -2,14 +2,14 @@ package TableTap.api;
 
 import TableTap.models.dto.CreateRestaurantRequest;
 import TableTap.models.dto.RestaurantDTO;
+import TableTap.models.enums.CuisineType;
 import TableTap.services.RestaurantService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static TableTap.security.utils.Constants.API_ROUTE;
 
@@ -25,5 +25,21 @@ public class RestaurantController {
     public ResponseEntity<RestaurantDTO> createRestaurant(@RequestBody CreateRestaurantRequest request) {
         log.info("Creating a new restaurant");
         return ResponseEntity.ok(restaurantService.createRestaurant(request));
+    }
+
+    @GetMapping("all")
+    public ResponseEntity<List<RestaurantDTO>> getAllRestaurants() {
+        log.info("Fetching all restaurants");
+        return ResponseEntity.ok(restaurantService.getAllRestaurants());
+    }
+
+    @GetMapping("filter")
+    public ResponseEntity<List<RestaurantDTO>> filterRestaurants(
+            @RequestParam(required = false) CuisineType[] type,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String search
+    ) {
+        log.info("Fetching restaurants by filters: ({}), ({}), ({}),", type, sort, search);
+        return ResponseEntity.ok(restaurantService.filterRestaurants(type, sort, search));
     }
 }
