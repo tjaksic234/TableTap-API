@@ -45,7 +45,8 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+        http
+                .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -53,9 +54,9 @@ public class WebSecurityConfig {
                         .requestMatchers(API_ROUTE + "/auth/**").permitAll()
                         .requestMatchers(API_ROUTE + "/users/**").permitAll()
                         .anyRequest().authenticated());
+
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
-
     }
 
     @Bean

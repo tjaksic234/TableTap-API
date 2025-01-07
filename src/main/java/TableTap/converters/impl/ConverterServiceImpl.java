@@ -42,11 +42,29 @@ public class ConverterServiceImpl implements ConverterService {
     @Override
     public TableDTO convertTableToTableDTO(Table table) {
         TableDTO tableDTO = new TableDTO();
+        tableDTO.setId(table.getId());
         tableDTO.setRestaurantID(table.getRestaurantID());
         tableDTO.setMinGuests(table.getMinGuests());
         tableDTO.setMaxGuests(table.getMaxGuests());
         tableDTO.setCreatedAt(table.getCreatedAt());
         return tableDTO;
+    }
+
+    @Override
+    public List<TableDTO> convertTablesToTableDTOs(List<Table> tableList) {
+        List<TableDTO> tableDTOList = new ArrayList<>();
+
+        for (Table table : tableList) {
+            TableDTO tableDTO = new TableDTO();
+            tableDTO.setId(table.getId());
+            tableDTO.setRestaurantID(table.getRestaurantID());
+            tableDTO.setMinGuests(table.getMinGuests());
+            tableDTO.setMaxGuests(table.getMaxGuests());
+            tableDTO.setCreatedAt(table.getCreatedAt());
+
+            tableDTOList.add(tableDTO);
+        }
+        return tableDTOList;
     }
 
     @Override
@@ -67,6 +85,7 @@ public class ConverterServiceImpl implements ConverterService {
 
         for (Restaurant restaurant : restaurantList) {
             RestaurantDTO restaurantDTO = new RestaurantDTO();
+            restaurantDTO.setId(restaurant.getId());
             restaurantDTO.setName(restaurant.getName());
             restaurantDTO.setDescription(restaurant.getDescription());
             restaurantDTO.setCuisineType(restaurant.getCuisineType());

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TableDTO {
+    private String id;
     private String restaurantID;
     private int minGuests;
     private int maxGuests;

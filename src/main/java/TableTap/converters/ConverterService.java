@@ -15,6 +15,7 @@ public interface ConverterService {
     UserDTO convertUserToUserDTO(User user);
     RestaurantDTO convertRestaurantToRestaurantDTO(Restaurant restaurant);
     TableDTO convertTableToTableDTO(Table table);
+    List<TableDTO> convertTablesToTableDTOs(List<Table> tableList);
     ReservationDTO convertReservationToReservationDTO(Reservation reservation);
     List<RestaurantDTO> convertRestaurantsToRestaurantDTOs(List<Restaurant> restaurantList);
 }

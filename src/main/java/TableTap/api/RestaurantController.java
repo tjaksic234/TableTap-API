@@ -27,6 +27,12 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantService.createRestaurant(request));
     }
 
+    @GetMapping("{restaurantId}")
+    public ResponseEntity<RestaurantDTO> getRestaurantById(@PathVariable String restaurantId) {
+        log.info("Fetching restaurant by ID");
+        return ResponseEntity.ok(restaurantService.getRestaurantById(restaurantId));
+    }
+
     @GetMapping("all")
     public ResponseEntity<List<RestaurantDTO>> getAllRestaurants() {
         log.info("Fetching all restaurants");

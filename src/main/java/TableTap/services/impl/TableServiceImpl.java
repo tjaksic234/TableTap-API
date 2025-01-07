@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -37,8 +39,6 @@ public class TableServiceImpl implements TableService {
             throw new BadRequestException("Unacceptable guest values entered");
         }
 
-
-
         Table table = new Table();
         table.setRestaurantID(request.getRestaurantID());
         table.setMinGuests(request.getMinGuests());
@@ -48,5 +48,17 @@ public class TableServiceImpl implements TableService {
 
         log.info("Table successfully created!");
         return converterService.convertTableToTableDTO(table);
+    }
+
+    @Override
+    public List<TableDTO> getTablesForRestaurant(String restaurantId) {
+        if (restaurantRepository.findById(restaurantId).isEmpty()) {
+            throw new NotFoundException("Restaurant not found");
+        }
+
+        List<Table> tableList = tableRepository.findByRestaurantID(restaurantId);
+
+        log.info("#{} tables fetched for restaurant({})", tableList.size(), restaurantId);
+        return converterService.convertTablesToTableDTOs(tableList);
     }
 }

@@ -2,6 +2,7 @@ package TableTap.services.impl;
 
 import TableTap.converters.ConverterService;
 import TableTap.exceptions.EntityAlreadyExistsException;
+import TableTap.exceptions.NotFoundException;
 import TableTap.models.dao.Point;
 import TableTap.models.dao.Restaurant;
 import TableTap.models.dto.CreateRestaurantRequest;
@@ -54,6 +55,13 @@ public class RestaurantServiceImpl implements RestaurantService {
         restaurantRepository.save(restaurant);
 
         log.info("Restaurant successfully created");
+        return converterService.convertRestaurantToRestaurantDTO(restaurant);
+    }
+
+    @Override
+    public RestaurantDTO getRestaurantById(String restaurantId) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new NotFoundException("Restaurant not found"));
         return converterService.convertRestaurantToRestaurantDTO(restaurant);
     }
 
