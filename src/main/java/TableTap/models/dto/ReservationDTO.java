@@ -14,6 +14,7 @@ public class ReservationDTO {
     private String restaurantID;
     private String tableID;
     private int numOfGuests;
-    private LocalDateTime reservationDate;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private LocalDateTime validUntil;
 }

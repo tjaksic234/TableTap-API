@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ReservationRepository extends MongoRepository<Reservation, String> {
-    List<Reservation> findByEmailAndStatusAndReservationDateBetween(
-            String email, ReservationStatus status,
-            LocalDateTime oneHourBefore, LocalDateTime oneHourAfter);
+    List<Reservation> findByTableIDAndStatusAndStartTimeLessThanAndEndTimeGreaterThan(
+            String tableId, ReservationStatus status,
+            LocalDateTime endTime, LocalDateTime startTime
+    );
 }

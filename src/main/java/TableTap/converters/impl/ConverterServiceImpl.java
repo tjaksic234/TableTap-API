@@ -74,7 +74,8 @@ public class ConverterServiceImpl implements ConverterService {
         reservationDTO.setRestaurantID(reservation.getRestaurantID());
         reservationDTO.setTableID(reservation.getTableID());
         reservationDTO.setNumOfGuests(reservation.getNumOfGuests());
-        reservationDTO.setReservationDate(reservation.getReservationDate());
+        reservationDTO.setStartTime(reservation.getStartTime());
+        reservationDTO.setEndTime(reservation.getEndTime());
         reservationDTO.setValidUntil(reservation.getValidUntil());
         return reservationDTO;
     }

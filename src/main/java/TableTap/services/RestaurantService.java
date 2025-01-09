@@ -1,6 +1,5 @@
 package TableTap.services;
 
-import TableTap.models.dao.Restaurant;
 import TableTap.models.dto.CreateRestaurantRequest;
 import TableTap.models.dto.RestaurantDTO;
 import TableTap.models.enums.CuisineType;

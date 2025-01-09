@@ -65,32 +65,39 @@ public class ReservationServiceImpl implements ReservationService {
             throw new BadRequestException("Unsupported number of guests for the selected table");
         }
 
-        LocalDateTime requestedTime = request.getReservationDate();
-        LocalDateTime oneHourBefore = requestedTime.minusHours(1);
-        LocalDateTime oneHourAfter = requestedTime.plusHours(1);
+        LocalDateTime startTime = request.getStartTime();
+        LocalDateTime endTime = request.getEndTime();
 
-        List<Reservation> recentReservations = reservationRepository.findByEmailAndStatusAndReservationDateBetween(
-                request.getEmail(), ReservationStatus.ACTIVE, oneHourBefore, oneHourAfter);
-
-        if (!recentReservations.isEmpty()) {
-            throw new BadRequestException("Must wait at least 1 hour between reservations!");
+        if (startTime.isAfter(endTime)) {
+            throw new BadRequestException("Start time must be before end time");
+        } else if (startTime.equals(endTime) || endTime.minusHours(2).isBefore(startTime)) {
+            throw new BadRequestException("Start time must not equal to end time and must be at least 2 hours apart");
+        } else if (startTime.plusHours(4).isBefore(endTime)) {
+            throw new BadRequestException("Reservation cannot be longer than 4 hours");
         }
 
+        List<Reservation> overlappingReservations  = reservationRepository.findByTableIDAndStatusAndStartTimeLessThanAndEndTimeGreaterThan(
+                request.getTableID(), ReservationStatus.ACTIVE, endTime, startTime);
+
+        if (!overlappingReservations.isEmpty()) {
+            throw new BadRequestException("Table is already reserved during this time period");
+        }
 
         Reservation reservation = new Reservation();
         reservation.setEmail(request.getEmail());
         reservation.setRestaurantID(request.getRestaurantID());
         reservation.setTableID(request.getTableID());
         reservation.setNumOfGuests(request.getNumOfGuests());
-        reservation.setReservationDate(request.getReservationDate());
-        reservation.setValidUntil(request.getReservationDate().plusHours(1));
+        reservation.setStartTime(request.getStartTime());
+        reservation.setEndTime(request.getEndTime());
+        reservation.setValidUntil(request.getStartTime().plusMinutes(15));
 
         reservationRepository.save(reservation);
 
         sendVerificationEmail(reservation);
 
-        log.info("Reservation of tableID: {} at the date: {} was successful!",
-                reservation.getTableID(), reservation.getReservationDate());
+        log.info("Reservation of tableID: {} from {} to {} was successful!",
+                reservation.getTableID(), reservation.getStartTime(), reservation.getEndTime());
         return converterService.convertReservationToReservationDTO(reservation);
     }
 
@@ -108,8 +115,8 @@ public class ReservationServiceImpl implements ReservationService {
         String reservationConfirmationURL = BACKEND_URL + "/api/auth/verify?invitationId=" + reservationConfirmation.getId()
                 + "&reservationCode=" + reservationCode;
 
-        sendGridEmailService.sendHtml(EMAIL_FROM, reservation.getEmail(), "Reservation Confirmation",
-                EmailTemplates.getReservationConfirmation(reservation.getEmail(),
-                        restaurant.get().getName(), reservation.getReservationDate(), reservation.getValidUntil(), reservation.getNumOfGuests()));
+        //sendGridEmailService.sendHtml(EMAIL_FROM, reservation.getEmail(), "Reservation Confirmation",
+               // EmailTemplates.getReservationConfirmation(reservation.getEmail(),
+                      //  restaurant.get().getName(), reservation.getReservationDate(), reservation.getValidUntil(), reservation.getNumOfGuests()));
     }
 }

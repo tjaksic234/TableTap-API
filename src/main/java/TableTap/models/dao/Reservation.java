@@ -28,7 +28,9 @@ public class Reservation {
 
     private int numOfGuests;
 
-    private LocalDateTime reservationDate;
+    private LocalDateTime startTime;
+
+    private LocalDateTime endTime;
 
     @CreatedDate
     private LocalDateTime createdAt;
