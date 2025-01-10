@@ -1,6 +1,7 @@
 spring:
   application:
     name: ${SPRING_APPLICATION_NAME}
+    version: ${SPRING_APPLICATION_VERSION}
   config:
     import: optional:file:.env[.properties]
   profiles:

@@ -1,0 +1,8 @@
+,--------.       ,--.   ,--.     ,--------.
+'--.  .--',--,--.|  |-. |  |,---.'--.  .--',--,--. ,---.
+   |  |  ' ,-.  || .-. '|  | .-. :  |  |  ' ,-.  || .-. |
+   |  |  \ '-'  || `-' ||  \   --.  |  |  \ '-'  || '-' '
+   `--'   `--`--' `---' `--'`----'  `--'   `--`--'|  |-'
+                                                  `--'
+${Ansi.GREEN}:: ${SPRING_APPLICATION_NAME} ${SPRING_APPLICATION_VERSION}
+${Ansi.GREEN}:: Powered by Spring Boot ${spring-boot.version} ${Ansi.DEFAULT}
