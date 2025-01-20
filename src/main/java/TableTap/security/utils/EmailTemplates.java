@@ -120,7 +120,7 @@ public class EmailTemplates {
                 numOfGuests,
                 email,
                 restaurantName,
-                reservationTime.format(DateTimeFormatter.ofPattern("MMMM d, yyyy 'at' h:mm a")),
+                reservationTime.format(DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy 'at' h:mm a")),
                 validUntil.format(DateTimeFormatter.ofPattern("h:mm a"))
         );
     }

@@ -115,8 +115,8 @@ public class ReservationServiceImpl implements ReservationService {
         String reservationConfirmationURL = BACKEND_URL + "/api/auth/verify?invitationId=" + reservationConfirmation.getId()
                 + "&reservationCode=" + reservationCode;
 
-        //sendGridEmailService.sendHtml(EMAIL_FROM, reservation.getEmail(), "Reservation Confirmation",
-               // EmailTemplates.getReservationConfirmation(reservation.getEmail(),
-                      //  restaurant.get().getName(), reservation.getReservationDate(), reservation.getValidUntil(), reservation.getNumOfGuests()));
+        sendGridEmailService.sendHtml(EMAIL_FROM, reservation.getEmail(), "Reservation Confirmation",
+                EmailTemplates.getReservationConfirmation(reservation.getEmail(),
+                        restaurant.get().getName(), reservation.getStartTime(), reservation.getValidUntil(), reservation.getNumOfGuests()));
     }
 }
