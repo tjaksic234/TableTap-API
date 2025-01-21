@@ -48,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
         user.setName(request.getName());
         user.setSurname(request.getSurname());
         user.setEmail(request.getEmail());
-        if (PhoneHelper.validatePhoneNumber(request.getPhone())) {
+        if (request.getPhone() != null && PhoneHelper.validatePhoneNumber(request.getPhone())) {
             user.setPhone(request.getPhone());
         } else  {
             throw new InvalidPhoneException("Invalid phone number entered");
@@ -66,10 +66,6 @@ public class AuthServiceImpl implements AuthService {
                 request.getEmail(),
                 request.getPassword()
         ));
-
-        //? this is unnecessary since the authentication manager already checks the credentials
-        //? and does the lookup for the user in the db
-        //userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new UnauthorizedException("User not found"));
 
         LoginResponse response = new LoginResponse();
 
