@@ -22,7 +22,7 @@ public class GroupController {
     private final GroupService groupService;
 
     @PostMapping("create")
-    public ResponseEntity<GroupDTO> createReservation(@RequestBody CreateGroupRequest request) {
+    public ResponseEntity<GroupDTO> createGroup(@RequestBody CreateGroupRequest request) {
         log.info("Attempting to create a group");
         return ResponseEntity.ok(groupService.createGroup(request));
     }

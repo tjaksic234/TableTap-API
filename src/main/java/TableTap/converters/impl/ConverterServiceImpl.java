@@ -55,6 +55,16 @@ public class ConverterServiceImpl implements ConverterService {
     }
 
     @Override
+    public GroupMemberDTO convertGroupMemberToGroupMemberDTO(GroupMember groupMember) {
+        GroupMemberDTO groupMemberDTO = new GroupMemberDTO();
+        groupMemberDTO.setUserId(groupMember.getUserId());
+        groupMemberDTO.setGroupId(groupMember.getGroupId());
+        groupMemberDTO.setMemberStatus(groupMember.getMemberStatus());
+        groupMemberDTO.setJoinedAt(groupMember.getJoinedAt());
+        return groupMemberDTO;
+    }
+
+    @Override
     public List<TableDTO> convertTablesToTableDTOs(List<Table> tableList) {
         List<TableDTO> tableDTOList = new ArrayList<>();
 

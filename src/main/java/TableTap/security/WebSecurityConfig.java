@@ -53,8 +53,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(API_ROUTE + "/auth/**").permitAll()
                         .requestMatchers(API_ROUTE + "/users/**").permitAll()
+                        .requestMatchers(API_ROUTE + "/chat/**").permitAll()
                         .anyRequest().authenticated());
-
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

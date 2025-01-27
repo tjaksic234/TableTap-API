@@ -1,5 +1,6 @@
 package TableTap.models.dao;
 
+import TableTap.models.enums.MessageType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,6 +29,9 @@ public class Message {
 
     @NotBlank
     private String content;
+
+    @NotBlank
+    private MessageType messageType;
 
     private String groupId;
 
