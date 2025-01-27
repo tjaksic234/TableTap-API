@@ -1,14 +1,8 @@
 package TableTap.converters.impl;
 
 import TableTap.converters.ConverterService;
-import TableTap.models.dao.Reservation;
-import TableTap.models.dao.Restaurant;
-import TableTap.models.dao.Table;
-import TableTap.models.dao.User;
-import TableTap.models.dto.ReservationDTO;
-import TableTap.models.dto.RestaurantDTO;
-import TableTap.models.dto.TableDTO;
-import TableTap.models.dto.UserDTO;
+import TableTap.models.dao.*;
+import TableTap.models.dto.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +42,16 @@ public class ConverterServiceImpl implements ConverterService {
         tableDTO.setMaxGuests(table.getMaxGuests());
         tableDTO.setCreatedAt(table.getCreatedAt());
         return tableDTO;
+    }
+
+    @Override
+    public GroupDTO convertGroupToGroupDTO(Group group) {
+        GroupDTO groupDTO = new GroupDTO();
+        groupDTO.setName(group.getName());
+        groupDTO.setDescription(group.getDescription());
+        groupDTO.setGroupType(group.getGroupType());
+        groupDTO.setCreatedAt(group.getCreatedAt());
+        return groupDTO;
     }
 
     @Override
