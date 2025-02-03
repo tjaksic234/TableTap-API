@@ -1,7 +1,7 @@
 package TableTap.services;
 
-import TableTap.models.dao.Message;
+import TableTap.models.dto.MessageDTO;
 
 public interface ChatService {
-    Message sendMessage(String fromUser, String toUser, String content);
+    MessageDTO sendMessage(String fromUser, String toUser, String content);
 }

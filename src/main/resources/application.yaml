@@ -9,9 +9,6 @@ spring:
   data:
     mongodb:
       uri: ${SPRING_MONGODB_URI}
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
   sendgrid:
     api-key: ${SENDGRID_API_KEY}
     email-from: ${SENDGRID_EMAIL_FROM}
@@ -19,6 +16,11 @@ spring:
     cookie-name: ${JWT_COOKIE_NAME}
     secret: ${JWT_SECRET}
     expiration-ms: ${JWT_EXPIRATION_MS}
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
 ---
 # Development properties
 spring:

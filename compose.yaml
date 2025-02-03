@@ -1,6 +1,8 @@
 services:
   tabletap-api:
-    image: tabletap-api
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: tabletap-api
     networks:
       - caddy_network
@@ -31,5 +33,4 @@ volumes:
 
 networks:
   caddy_network:
-    name: caddy_network
     driver: bridge

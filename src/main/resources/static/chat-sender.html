@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TableTap Chat</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+</head>
+<body class="bg-gray-100 h-screen">
+<div class="container mx-auto p-4 h-full">
+    <div class="bg-white rounded-lg shadow-lg h-full flex flex-col">
+        <!-- Header -->
+        <div class="bg-blue-600 text-white p-4 rounded-t-lg flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="/api/placeholder/40/40" alt="User Avatar" class="rounded-full mr-3">
+                <div>
+                    <h1 class="text-xl font-bold">Chat</h1>
+                    <div class="text-sm" id="connectionStatus">Status: Disconnected</div>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="settingsBtn" class="hover:bg-blue-700 p-2 rounded">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button id="clearBtn" class="hover:bg-blue-700 p-2 rounded">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="flex-1 overflow-hidden flex">
+            <!-- Chat Content -->
+            <div class="flex-1 flex flex-col">
+                <!-- Chat History -->
+                <div class="flex-1 overflow-y-auto p-4" id="chatHistory">
+                    <!-- Messages will be added here dynamically -->
+                </div>
+
+                <!-- Message Input Area -->
+                <div class="border-t p-4 bg-gray-50">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <input type="text" id="usernameInput" placeholder="Your username"
+                               class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button id="connectBtn" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                            Connect
+                        </button>
+                    </div>
+                    <div class="flex items-center space-x-2 mt-2">
+                        <button id="attachBtn" class="p-2 text-gray-600 hover:text-blue-600" disabled>
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <button id="emojiBtn" class="p-2 text-gray-600 hover:text-blue-600" disabled>
+                            <i class="far fa-smile"></i>
+                        </button>
+                        <input type="text" id="messageInput" placeholder="Type your message..." disabled
+                               class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button id="sendBtn" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" disabled>
+                            <i class="fas fa-paper-plane mr-2"></i>Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Settings Modal -->
+<div id="settingsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg p-6 w-96">
+        <h2 class="text-xl font-bold mb-4">Settings</h2>
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Theme</label>
+                <select id="themeSelect" class="mt-1 w-full px-3 py-2 border rounded-lg">
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Notification Sound</label>
+                <select id="soundSelect" class="mt-1 w-full px-3 py-2 border rounded-lg">
+                    <option value="enabled">Enabled</option>
+                    <option value="disabled">Disabled</option>
+                </select>
+            </div>
+        </div>
+        <div class="mt-6 flex justify-end space-x-3">
+            <button id="closeSettingsBtn" class="px-4 py-2 border rounded-lg hover:bg-gray-100">Cancel</button>
+            <button id="saveSettingsBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Save</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let stompClient = null;
+        let connected = false;
+        let username = '';
+
+        // DOM elements
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+        const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+        const sendBtn = document.getElementById('sendBtn');
+        const messageInput = document.getElementById('messageInput');
+        const usernameInput = document.getElementById('usernameInput');
+        const chatHistory = document.getElementById('chatHistory');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const connectBtn = document.getElementById('connectBtn');
+        const attachBtn = document.getElementById('attachBtn');
+        const emojiBtn = document.getElementById('emojiBtn');
+
+        // Event listeners
+        settingsBtn.addEventListener('click', () => settingsModal.classList.remove('hidden'));
+        closeSettingsBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
+        saveSettingsBtn.addEventListener('click', saveSettings);
+        connectBtn.addEventListener('click', toggleConnection);
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        function toggleConnection() {
+            if (connected) {
+                disconnect();
+            } else {
+                connect();
+            }
+        }
+
+        function connect() {
+            username = usernameInput.value.trim();
+            if (!username) {
+                alert('Please enter a username');
+                return;
+            }
+
+            const socket = new SockJS('/ws');
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, function(frame) {
+                connected = true;
+                connectionStatus.textContent = 'Status: Connected';
+                connectBtn.textContent = 'Disconnect';
+                connectBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                connectBtn.classList.add('bg-red-600', 'hover:bg-red-700');
+                messageInput.disabled = false;
+                sendBtn.disabled = false;
+                attachBtn.disabled = false;
+                emojiBtn.disabled = false;
+                usernameInput.disabled = true;
+
+                // Subscribe to public channel
+                stompClient.subscribe('/topic/public', function(message) {
+                    showMessage(JSON.parse(message.body));
+                });
+
+                // Send join message
+                stompClient.send("/app/chat.register",
+                    {},
+                    JSON.stringify({fromUser: username, type: 'JOIN'})
+                );
+            }, function(error) {
+                console.error('STOMP error:', error);
+                connectionStatus.textContent = 'Status: Error connecting';
+            });
+        }
+
+        function disconnect() {
+            if (stompClient) {
+                stompClient.send("/app/chat.register",
+                    {},
+                    JSON.stringify({fromUser: username, type: 'LEAVE'})
+                );
+                stompClient.disconnect();
+            }
+            connected = false;
+            connectionStatus.textContent = 'Status: Disconnected';
+            connectBtn.textContent = 'Connect';
+            connectBtn.classList.remove('bg-red-600', 'hover:bg-red-700');
+            connectBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+            messageInput.disabled = true;
+            sendBtn.disabled = true;
+            attachBtn.disabled = true;
+            emojiBtn.disabled = true;
+            usernameInput.disabled = false;
+        }
+
+        function sendMessage() {
+            if (!connected) return;
+
+            const content = messageInput.value.trim();
+            if (!content) return;
+
+            const chatMessage = {
+                fromUser: username,
+                content: content,
+                type: 'CHAT'
+            };
+
+            stompClient.send("/app/chat.send", {}, JSON.stringify(chatMessage));
+            messageInput.value = '';
+        }
+
+        function showMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'mb-4';
+
+            const isOwnMessage = message.fromUser === username;
+            const alignmentClass = isOwnMessage ? 'ml-auto' : 'mr-auto';
+            const backgroundColor = isOwnMessage ? 'bg-blue-100' : 'bg-gray-100';
+
+            if (message.type === 'CHAT') {
+                messageElement.innerHTML = `
+                    <div class="flex flex-col ${alignmentClass} max-w-md">
+                        <div class="text-sm text-gray-600 mb-1">
+                            ${message.fromUser}
+                        </div>
+                        <div class="${backgroundColor} rounded-lg p-3">
+                            ${message.content}
+                        </div>
+                    </div>
+                `;
+            } else if (message.type === 'JOIN' || message.type === 'LEAVE') {
+                messageElement.innerHTML = `
+                    <div class="text-center text-sm text-gray-500 my-2">
+                        ${message.fromUser} ${message.type === 'JOIN' ? 'joined' : 'left'} the chat
+                    </div>
+                `;
+            }
+
+            chatHistory.appendChild(messageElement);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        function saveSettings() {
+            const theme = document.getElementById('themeSelect').value;
+            const sound = document.getElementById('soundSelect').value;
+
+            localStorage.setItem('theme', theme);
+            localStorage.setItem('sound', sound);
+
+            settingsModal.classList.add('hidden');
+        }
+
+        // Load saved settings
+        function loadSettings() {
+            document.getElementById('themeSelect').value = localStorage.getItem('theme') || 'light';
+            document.getElementById('soundSelect').value = localStorage.getItem('sound') || 'enabled';
+        }
+
+        // Initialize
+        loadSettings();
+    });
+</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 package TableTap.api;
 
-import TableTap.models.dao.Message;
+import TableTap.models.dto.MessageDTO;
 import TableTap.services.ChatService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,11 +21,11 @@ public class ChatController {
     private final ChatService chatService;
 
     @PostMapping("/send")
-    public ResponseEntity<Message> sendMessage(@RequestParam String fromUser,
-                                               @RequestParam String toUser,
-                                               @RequestParam String content)
+    public ResponseEntity<MessageDTO> sendMessage(@RequestParam String fromUser,
+                                                  @RequestParam String toUser,
+                                                  @RequestParam String content)
     {
-        Message sent = chatService.sendMessage(fromUser, toUser, content);
-        return ResponseEntity.ok(sent);
+        log.info("Attempting to send a message");
+        return ResponseEntity.ok(chatService.sendMessage(fromUser, toUser, content));
     }
 }

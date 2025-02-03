@@ -10,6 +10,7 @@ public interface ConverterService {
     RestaurantDTO convertRestaurantToRestaurantDTO(Restaurant restaurant);
     TableDTO convertTableToTableDTO(Table table);
     GroupDTO convertGroupToGroupDTO(Group group);
+    MessageDTO convertMessageToMessageDTO(Message message);
     GroupMemberDTO convertGroupMemberToGroupMemberDTO(GroupMember groupMember);
     List<TableDTO> convertTablesToTableDTOs(List<Table> tableList);
     ReservationDTO convertReservationToReservationDTO(Reservation reservation);

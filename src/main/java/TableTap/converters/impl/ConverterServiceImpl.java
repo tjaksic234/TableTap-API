@@ -55,6 +55,18 @@ public class ConverterServiceImpl implements ConverterService {
     }
 
     @Override
+    public MessageDTO convertMessageToMessageDTO(Message message) {
+        MessageDTO messageDTO = new MessageDTO();
+        messageDTO.setFromUser(message.getFromUser());
+        messageDTO.setToUser(message.getToUser());
+        messageDTO.setContent(message.getContent());
+        messageDTO.setMessageType(message.getMessageType());
+        messageDTO.setGroupId(message.getGroupId());
+        messageDTO.setCreatedAt(message.getCreatedAt());
+        return messageDTO;
+    }
+
+    @Override
     public GroupMemberDTO convertGroupMemberToGroupMemberDTO(GroupMember groupMember) {
         GroupMemberDTO groupMemberDTO = new GroupMemberDTO();
         groupMemberDTO.setUserId(groupMember.getUserId());
